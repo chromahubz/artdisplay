@@ -56,10 +56,12 @@ export default function MockupCanvas({ artworkImage, mockupType, exportRef }: Mo
   const config = mockupConfigs[mockupType] || mockupConfigs.frame1;
   const [points, setPoints] = useState<Point[]>(config.defaultPoints);
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
+  const [mockupLoaded, setMockupLoaded] = useState(false);
   const canvasRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setPoints(config.defaultPoints);
+    setMockupLoaded(false);
   }, [mockupType, config.defaultPoints]);
 
   const handleMouseDown = useCallback((index: number) => {
@@ -143,20 +145,28 @@ export default function MockupCanvas({ artworkImage, mockupType, exportRef }: Mo
       >
         {/* Background mockup image or pattern */}
         {config.image ? (
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 z-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={config.image}
               alt="Mockup background"
               className="w-full h-full object-cover"
+              onLoad={() => setMockupLoaded(true)}
               onError={(e) => {
                 // Hide image if it fails to load
                 e.currentTarget.style.display = 'none';
+                console.error('Failed to load mockup image:', config.image);
+                setMockupLoaded(false);
               }}
             />
+            {!mockupLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+                <p className="text-sm text-gray-500">Loading mockup...</p>
+              </div>
+            )}
           </div>
         ) : (
-          <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 opacity-30 z-0">
             <div className="absolute inset-0" style={{
               backgroundImage: `
                 linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%),
@@ -172,22 +182,27 @@ export default function MockupCanvas({ artworkImage, mockupType, exportRef }: Mo
 
         {/* Artwork with perspective transform */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none z-10 overflow-hidden"
           style={{
             transformStyle: 'preserve-3d',
             perspective: '1000px',
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={artworkImage}
-            alt="User uploaded artwork with 3D perspective transformation"
-            className="absolute w-full h-full object-cover shadow-2xl"
+          <div
+            className="absolute w-full h-full"
             style={{
               transform: transformMatrix,
               transformOrigin: '0 0',
+              transformStyle: 'preserve-3d',
             }}
-          />
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={artworkImage}
+              alt="User uploaded artwork with 3D perspective transformation"
+              className="w-full h-full object-cover shadow-2xl"
+            />
+          </div>
         </div>
 
         {/* Corner control points */}
