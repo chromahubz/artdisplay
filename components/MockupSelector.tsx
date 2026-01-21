@@ -54,20 +54,20 @@ export default function MockupSelector({ selectedMockup, onSelectMockup }: Mocku
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className={`
-                w-full p-4 rounded-2xl text-left transition-all
+                w-full rounded-2xl text-left transition-all relative
                 ${isSelected
-                  ? 'glass ring-2 ring-purple-500 dark:ring-purple-400 ring-offset-2 ring-offset-white dark:ring-offset-gray-950'
-                  : 'glass hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                  ? 'bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 border-2 border-purple-500 dark:border-purple-400'
+                  : 'glass hover:bg-gray-50 dark:hover:bg-gray-800/50 border-2 border-transparent'
                 }
               `}
             >
-              <div className="flex items-center gap-3">
+              <div className="p-4 flex items-center gap-4">
                 <div className={`
-                  w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0
+                  w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm
                   ${mockup.preview}
                 `}>
                   <Icon className={`
-                    w-7 h-7
+                    w-8 h-8
                     ${mockup.id === 'frame2' ? 'text-white' : 'text-gray-700 dark:text-gray-300'}
                   `} />
                 </div>
