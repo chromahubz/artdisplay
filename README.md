@@ -48,6 +48,20 @@ npm run dev
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
+### Optional: Add Custom Mockup Backgrounds
+
+For realistic mockup backgrounds, download free images and place them in `/public/mockups/`:
+
+```bash
+# Download from Unsplash or Pexels (see MOCKUP_SOURCES.md)
+# Place these files in public/mockups/:
+# - frame1.jpg (Classic frame)
+# - frame2.jpg (Modern frame)
+# - gallery-wall.jpg (Gallery wall)
+```
+
+See `MOCKUP_SOURCES.md` for free image sources and detailed instructions.
+
 ## Usage
 
 1. **Upload Your Artwork**: Click "Get Started" and upload your artwork (JPG, PNG, SVG)

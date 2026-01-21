@@ -21,7 +21,7 @@ const mockupConfigs: Record<string, {
   backgroundColor: string;
 }> = {
   frame1: {
-    image: "",
+    image: "/mockups/frame1.jpg", // Classic wooden/gold frame
     defaultPoints: [
       { x: 30, y: 25 },  // top-left
       { x: 70, y: 25 },  // top-right
@@ -31,7 +31,7 @@ const mockupConfigs: Record<string, {
     backgroundColor: "#f5f5f5",
   },
   frame2: {
-    image: "",
+    image: "/mockups/frame2.jpg", // Modern black frame
     defaultPoints: [
       { x: 25, y: 30 },
       { x: 75, y: 28 },
@@ -41,7 +41,7 @@ const mockupConfigs: Record<string, {
     backgroundColor: "#1a1a1a",
   },
   wall: {
-    image: "",
+    image: "/mockups/gallery-wall.jpg", // Gallery wall
     defaultPoints: [
       { x: 32, y: 28 },
       { x: 68, y: 30 },
@@ -141,19 +141,34 @@ export default function MockupCanvas({ artworkImage, mockupType, exportRef }: Mo
         onMouseLeave={handleMouseUp}
         style={{ backgroundColor: config.backgroundColor }}
       >
-        {/* Background mockup pattern */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `
-              linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%),
-              linear-gradient(-45deg, rgba(0,0,0,0.05) 25%, transparent 25%),
-              linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.05) 75%),
-              linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.05) 75%)
-            `,
-            backgroundSize: '20px 20px',
-            backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px',
-          }} />
-        </div>
+        {/* Background mockup image or pattern */}
+        {config.image ? (
+          <div className="absolute inset-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={config.image}
+              alt="Mockup background"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                // Hide image if it fails to load
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+          </div>
+        ) : (
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `
+                linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(0,0,0,0.05) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.05) 75%),
+                linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.05) 75%)
+              `,
+              backgroundSize: '20px 20px',
+              backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px',
+            }} />
+          </div>
+        )}
 
         {/* Artwork with perspective transform */}
         <div

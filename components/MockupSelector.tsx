@@ -56,18 +56,18 @@ export default function MockupSelector({ selectedMockup, onSelectMockup }: Mocku
               className={`
                 w-full p-4 rounded-2xl text-left transition-all
                 ${isSelected
-                  ? 'glass ring-2 ring-purple-500 dark:ring-purple-400'
+                  ? 'glass ring-2 ring-purple-500 dark:ring-purple-400 ring-offset-2 ring-offset-white dark:ring-offset-gray-950'
                   : 'glass hover:bg-gray-50 dark:hover:bg-gray-800/50'
                 }
               `}
             >
-              <div className="flex items-start gap-3">
+              <div className="flex items-center gap-3">
                 <div className={`
-                  w-12 h-12 rounded-xl flex items-center justify-center
+                  w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0
                   ${mockup.preview}
                 `}>
                   <Icon className={`
-                    w-6 h-6
+                    w-7 h-7
                     ${mockup.id === 'frame2' ? 'text-white' : 'text-gray-700 dark:text-gray-300'}
                   `} />
                 </div>
