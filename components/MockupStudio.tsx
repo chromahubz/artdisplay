@@ -2,22 +2,29 @@
 
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, Download, Home, RotateCcw, Sparkles } from "lucide-react";
+import { Upload, Download, Home, RotateCcw, Sparkles, Loader2 } from "lucide-react";
 import MockupCanvas from "./MockupCanvas";
 import MockupSelector from "./MockupSelector";
 
 export default function MockupStudio() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [selectedMockup, setSelectedMockup] = useState<string>("frame1");
+  const [isExporting, setIsExporting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasExportRef = useRef<HTMLDivElement>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setIsLoading(true);
       const reader = new FileReader();
       reader.onload = (e) => {
         setUploadedImage(e.target?.result as string);
+        setIsLoading(false);
+      };
+      reader.onerror = () => {
+        setIsLoading(false);
       };
       reader.readAsDataURL(file);
     }
@@ -31,15 +38,17 @@ export default function MockupStudio() {
   };
 
   const handleExport = async () => {
-    if (!canvasExportRef.current) return;
+    if (!canvasExportRef.current || isExporting) return;
 
+    setIsExporting(true);
     try {
-      // Use html2canvas library
+      // Dynamically import html2canvas only when needed
       const html2canvas = (await import('html2canvas')).default;
       const canvas = await html2canvas(canvasExportRef.current, {
         backgroundColor: null,
         scale: 2,
         logging: false,
+        useCORS: true,
       });
 
       // Convert to blob and download
@@ -49,12 +58,16 @@ export default function MockupStudio() {
           const a = document.createElement('a');
           a.href = url;
           a.download = `artdisplay-${Date.now()}.png`;
+          document.body.appendChild(a);
           a.click();
+          document.body.removeChild(a);
           URL.revokeObjectURL(url);
         }
+        setIsExporting(false);
       }, 'image/png');
     } catch (error) {
       console.error('Export failed:', error);
+      setIsExporting(false);
     }
   };
 
@@ -80,11 +93,20 @@ export default function MockupStudio() {
             </button>
             <button
               onClick={handleExport}
-              disabled={!uploadedImage}
+              disabled={!uploadedImage || isExporting}
               className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Download className="w-4 h-4" />
-              Export
+              {isExporting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Exporting...
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4" />
+                  Export
+                </>
+              )}
             </button>
           </div>
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, Image, Download } from "lucide-react";
+import { Sparkles, Image as ImageIcon, Download } from "lucide-react";
 
 interface HeroProps {
   onGetStarted: () => void;
@@ -64,7 +64,7 @@ export default function Hero({ onGetStarted }: HeroProps) {
           className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-24 max-w-4xl mx-auto"
         >
           <FeatureCard
-            icon={<Image className="w-6 h-6" />}
+            icon={<ImageIcon className="w-6 h-6" />}
             title="Easy Upload"
             description="Drag and drop your artwork or click to upload"
           />

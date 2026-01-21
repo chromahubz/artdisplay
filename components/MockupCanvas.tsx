@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 
 interface Point {
@@ -60,13 +60,13 @@ export default function MockupCanvas({ artworkImage, mockupType, exportRef }: Mo
 
   useEffect(() => {
     setPoints(config.defaultPoints);
-  }, [mockupType]);
+  }, [mockupType, config.defaultPoints]);
 
-  const handleMouseDown = (index: number) => {
+  const handleMouseDown = useCallback((index: number) => {
     setDraggingIndex(index);
-  };
+  }, []);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (draggingIndex === null || !canvasRef.current) return;
 
     const rect = canvasRef.current.getBoundingClientRect();
@@ -81,14 +81,14 @@ export default function MockupCanvas({ artworkImage, mockupType, exportRef }: Mo
       };
       return newPoints;
     });
-  };
+  }, [draggingIndex]);
 
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     setDraggingIndex(null);
-  };
+  }, []);
 
-  // Calculate CSS transform matrix for perspective transformation
-  const getTransformMatrix = () => {
+  // Calculate CSS transform matrix for perspective transformation (memoized)
+  const transformMatrix = useMemo(() => {
     // Get canvas dimensions
     const width = 800;
     const height = 800;
@@ -98,14 +98,6 @@ export default function MockupCanvas({ artworkImage, mockupType, exportRef }: Mo
       x: (p.x / 100) * width,
       y: (p.y / 100) * height,
     }));
-
-    // Source points (original image corners)
-    const src = [
-      { x: 0, y: 0 },
-      { x: width, y: 0 },
-      { x: width, y: height },
-      { x: 0, y: height },
-    ];
 
     // Calculate perspective transform using CSS 3D transforms
     const dx1 = pixelPoints[1].x - pixelPoints[2].x;
@@ -132,7 +124,7 @@ export default function MockupCanvas({ artworkImage, mockupType, exportRef }: Mo
       0, 0, 1, 0,
       ${c}, ${f}, 0, 1
     )`;
-  };
+  }, [points]);
 
   return (
     <div className="h-full flex items-center justify-center p-8 glass rounded-3xl">
@@ -171,12 +163,13 @@ export default function MockupCanvas({ artworkImage, mockupType, exportRef }: Mo
             perspective: '1000px',
           }}
         >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={artworkImage}
-            alt="Artwork"
+            alt="User uploaded artwork with 3D perspective transformation"
             className="absolute w-full h-full object-cover shadow-2xl"
             style={{
-              transform: getTransformMatrix(),
+              transform: transformMatrix,
               transformOrigin: '0 0',
             }}
           />

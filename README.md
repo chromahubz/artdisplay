@@ -88,12 +88,47 @@ The app uses CSS 3D transforms with a custom matrix calculation to achieve reali
 - Gradient accents (purple to blue)
 - High-contrast, accessible color schemes
 
+## Deploy to Vercel
+
+The easiest way to deploy ArtDisplay is using Vercel:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/artdisplay)
+
+### Manual Deployment
+
+1. Install the Vercel CLI:
+```bash
+npm i -g vercel
+```
+
+2. Deploy:
+```bash
+vercel
+```
+
+### Environment Variables
+
+Copy `.env.example` to `.env.local` and configure:
+
+```bash
+cp .env.example .env.local
+```
+
 ## Building for Production
 
 ```bash
 npm run build
 npm start
 ```
+
+### Performance Optimizations
+
+- ⚡ **Dynamic Imports**: html2canvas is loaded only when needed
+- 🎯 **Memoization**: Transform calculations are memoized with useMemo
+- 📦 **Bundle Optimization**: Automatic package imports optimization for framer-motion and lucide-react
+- 🗜️ **Code Splitting**: Automatic code splitting by Next.js
+- 🚀 **SWC Minification**: Lightning-fast builds with SWC compiler
+- 🔒 **Security Headers**: XSS protection, clickjacking prevention via Vercel config
 
 ## Development Commands
 
